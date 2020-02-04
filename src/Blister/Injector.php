@@ -349,20 +349,24 @@ abstract class Injector implements Container {
 
         $info = [];
 
-        foreach ($fn->getParameters() as $param) {
-            $class = $param->getClass();
+        try {
+            foreach ($fn->getParameters() as $param) {
+                $class = $param->getClass();
 
-            $hasDefault = $param->isDefaultValueAvailable();
-            $isNullable = $param->allowsNull();
+                $hasDefault = $param->isDefaultValueAvailable();
+                $isNullable = $param->allowsNull();
 
-            $info[$param->getName()] = [
-                $class ? $class->getName() : null,
-                $param->isVariadic(),
-                $required = !($hasDefault || $isNullable),
-                $default = $required
-                    ? null
-                    : ($hasDefault ? $param->getDefaultValue() : null)
-            ];
+                $info[$param->getName()] = [
+                    $class ? $class->getName() : null,
+                    $param->isVariadic(),
+                    $required = !($hasDefault || $isNullable),
+                    $default = $required
+                        ? null
+                        : ($hasDefault ? $param->getDefaultValue() : null)
+                ];
+            }
+        } catch (ReflectionException $x) {
+            throw new UnknownService($x->getMessage());
         }
 
         return function(array $runtime = []) use ($fqmn, $info) {

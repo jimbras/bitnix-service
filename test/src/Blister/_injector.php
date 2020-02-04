@@ -87,6 +87,10 @@ class L {
     }
 }
 
+class M {
+    public function __construct(X $x = null) {}
+}
+
 interface Whatever {}
 class MockedInjector extends Injector implements Whatever {
 

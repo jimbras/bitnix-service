@@ -195,6 +195,11 @@ class InjectorTest extends TestCase {
         $this->assertEquals(L::CLASS, $l->k->context);
     }
 
+    public function testAutowiringCatchesReflectionExceptions() {
+        $this->expectException(UnknownService::CLASS);
+        $this->container->fetch(M::CLASS);
+    }
+
     public function testToString() {
         $this->assertIsString((string) $this->container);
     }
