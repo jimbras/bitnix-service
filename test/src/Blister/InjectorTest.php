@@ -40,7 +40,6 @@ class InjectorTest extends TestCase {
     public function testContainerResolvesItSelf() {
         foreach ([
             Container::CLASS,
-            ContainerInterface::CLASS,
             Injector::CLASS,
             Whatever::CLASS
         ] as $fqcn) {
@@ -159,28 +158,6 @@ class InjectorTest extends TestCase {
     public function testUnresolvedParametersThrowUnresolvedParameterException() {
         $this->expectException(UnresolvedParameter::CLASS);
         $this->container->call(fn(bool $flag) => $flag);
-    }
-
-    public function testHasReturnsTrueForKnowServicesOrTagsAndFalseOtherwise() {
-        $this->assertTrue($this->container->has(A::CLASS));
-        $this->assertTrue($this->container->has('service.tag'));
-        $this->assertFalse($this->container->has(F::CLASS));
-        $this->assertFalse($this->container->has('missing.tag'));
-    }
-
-    public function testGetReturnsKnownServiceOrKnownTags() {
-        $this->assertInstanceOf(A::CLASS, $this->container->get(A::CLASS));
-        $this->assertEquals(3, \count($this->container->get('service.tag')));
-    }
-
-    public function testGetThrowsUnknownServiceForMissingServices() {
-        $this->expectException(UnknownService::CLASS);
-        $this->container->get(X::CLASS);
-    }
-
-    public function testGetThrowsUnknownServiceForEmptyTaggedServices() {
-        $this->expectException(UnknownService::CLASS);
-        $this->container->get('missing.tag');
     }
 
     public function testContextReturnsNullIfContainerIsNotResolvingServices() {

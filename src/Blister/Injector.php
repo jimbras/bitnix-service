@@ -120,45 +120,6 @@ abstract class Injector implements Container {
     }
 
     /**
-     * @param string $key
-     * @return bool
-     */
-    public function has($key) : bool {
-
-        if (null !== $this->fetch($key, false)) {
-            return true;
-        }
-
-        if (!empty($this->tagged($key))) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @param string $key
-     * @return mixed
-     * @throws ServiceFailure
-     */
-    public function get($key) {
-
-        if (null !== ($service = $this->fetch($key, false))) {
-            return $service;
-        }
-
-        $tagged = $this->tagged($key);
-
-        if (!empty($tagged)) {
-            return $tagged;
-        }
-
-        throw new UnknownService(\sprintf(
-            'Unable to find service %s', $key
-        ));
-    }
-
-    /**
      * @return null|string
      */
     public function context() : ?string {

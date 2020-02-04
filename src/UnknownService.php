@@ -17,9 +17,7 @@
 
 namespace Bitnix\Service;
 
-use Psr\Container\NotFoundExceptionInterface;
-
 /**
  * @version 0.1.0
  */
-class UnknownService extends ServiceFailure implements NotFoundExceptionInterface {}
+class UnknownService extends ServiceFailure {}

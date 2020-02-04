@@ -17,12 +17,10 @@
 
 namespace Bitnix\Service;
 
-use Psr\Container\ContainerInterface;
-
 /**
  * @version 0.1.0
  */
-interface Container extends ContainerInterface {
+interface Container {
 
     /**
      * @return null|string

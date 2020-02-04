@@ -17,10 +17,9 @@
 
 namespace Bitnix\Service;
 
-use RuntimeException,
-    Psr\Container\ContainerExceptionInterface;
+use RuntimeException;
 
 /**
  * @version 0.1.0
  */
-class ServiceFailure extends RuntimeException implements ContainerExceptionInterface {}
+class ServiceFailure extends RuntimeException {}
