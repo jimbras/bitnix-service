@@ -103,7 +103,7 @@ class MockedInjector extends Injector implements Whatever {
             [D::CLASS => true],
 
             // tags
-            ['service.tag' => [E1::CLASS, E2::CLASS, E3::CLASS]]
+            ['service.tag' => [E1::CLASS, E2::CLASS, E3::CLASS], 'error.tag' => [I::CLASS]],
         );
     }
 

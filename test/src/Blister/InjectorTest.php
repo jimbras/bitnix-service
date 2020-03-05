@@ -22,7 +22,9 @@ use RuntimeException,
     Bitnix\Service\ServiceFailure,
     Bitnix\Service\UnknownService,
     PHPUnit\Framework\TestCase,
-    Psr\Container\ContainerInterface;
+    Psr\Container\ContainerInterface,
+    Psr\Container\ContainerExceptionInterface,
+    Psr\Container\NotFoundExceptionInterface;
 
 require_once __DIR__ . '/_injector.php';
 
@@ -40,6 +42,7 @@ class InjectorTest extends TestCase {
     public function testContainerResolvesItSelf() {
         foreach ([
             Container::CLASS,
+            ContainerInterface::CLASS,
             Injector::CLASS,
             Whatever::CLASS
         ] as $fqcn) {
@@ -80,6 +83,33 @@ class InjectorTest extends TestCase {
         $tagged = $this->container->tagged('service.tag');
         $this->assertEquals(3, \count($tagged));
         \array_walk($tagged, fn($el) => $this->assertInstanceOf(E::CLASS, $el));
+    }
+
+    public function testPsrContainerHas() {
+        $this->assertFalse($this->container->has('foo'));
+        $this->assertFalse($this->container->has('missing.tag'));
+        $this->assertFalse($this->container->has(J::CLASS)); // service error
+
+        $this->assertTrue($this->container->has(A::CLASS));
+        $this->assertTrue($this->container->has('service.tag'));
+    }
+
+    public function testPsrGet() {
+        $a = $this->container->fetch(A::CLASS);
+        $this->assertSame($a, $this->container->get(A::CLASS));
+
+        $tagged = $this->container->get('service.tag');
+        $this->assertEquals(3, \count($tagged));
+    }
+
+    public function testPsrGetServiceFailure() {
+        $this->expectException(ContainerExceptionInterface::CLASS);
+        $this->container->get('error.tag');
+    }
+
+    public function testPsrGetUnknownService() {
+        $this->expectException(NotFoundExceptionInterface::CLASS);
+        $this->container->get(X::CLASS);
     }
 
     public function testMissingRequiredServicesThrowsUnknownService() {

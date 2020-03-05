@@ -26,12 +26,15 @@ use Closure,
     Throwable,
     Bitnix\Service\Container,
     Bitnix\Service\ServiceFailure,
-    Bitnix\Service\UnknownService;
+    Bitnix\Service\UnknownService,
+    Psr\Container\ContainerInterface,
+    Psr\Container\ContainerExceptionInterface,
+    Psr\Container\NotFoundExceptionInterface;
 
 /**
  * @version 0.1.0
  */
-abstract class Injector implements Container {
+abstract class Injector implements Container, ContainerInterface {
 
     /**
      * @var array
@@ -92,6 +95,52 @@ abstract class Injector implements Container {
             \class_implements(static::CLASS),
             \class_parents(static::CLASS)
         );
+    }
+
+    /**
+     * @param string $id
+     * @return bool
+     */
+    public function has($id) {
+        try {
+            if (null !== $this->fetch($id, false)) {
+                return true;
+            }
+
+            if (!empty($this->tagged($id))) {
+                return true;
+            }
+        } catch (Throwable $x) {}
+
+
+        return false;
+    }
+
+    /**
+    * @param string $id
+    * @return mixed
+     */
+    public function get($id) {
+        try {
+            $found = $this->fetch($id, false);
+            if (null !== $found) {
+                return $found;
+            }
+
+            $found = $this->tagged($id);
+            if (!empty($found)) {
+                return $found;
+            }
+
+        } catch (UnknownService $x) {
+            // do nothing...
+        } catch (Throwable $t) {
+            throw new class($t->getMessage()) extends ServiceFailure implements ContainerExceptionInterface {};
+        }
+
+        throw new class(\sprintf(
+            'Unable to find service "%s"', $id
+        )) extends UnknownService implements NotFoundExceptionInterface {};
     }
 
     /**
