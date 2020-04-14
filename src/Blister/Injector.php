@@ -385,7 +385,17 @@ abstract class Injector implements Container, ContainerInterface {
             foreach ($info as $name => list($class, $variadic, $required, $default)) {
 
                 if ($class) {
-                    $args[] = $this->fetch($class, $required);
+
+                    if (isset($runtime[$name])) {
+                        $provided = $runtime[$name];
+                        unset($runtime[$name]);
+                    } else if (\is_int($index = \array_key_first($runtime)) && \is_object($runtime[$index])) {
+                        $provided = \array_shift($runtime);
+                    } else {
+                        $provided = $this->fetch($class, $required);
+                    }
+
+                    $args[] = $provided;
                     continue;
                 }
 

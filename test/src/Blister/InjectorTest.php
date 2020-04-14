@@ -180,6 +180,16 @@ class InjectorTest extends TestCase {
         $this->assertInstanceOf(A::CLASS, $this->container->call(fn(A ...$a) => $a[0]));
     }
 
+    public function testCallUsesUserProvidedServices() {
+        $object = new A();
+        $this->assertSame(
+            $object, $this->container->call(fn(A $a) => $a, [$object])
+        );
+        $this->assertSame(
+            $object, $this->container->call(fn(A $a, A $b) => $b, ['b' => $object])
+        );
+    }
+
     public function testCallResolvesParametersWithDefaultValues() {
         $this->assertEquals('bar', $this->container->call(fn(string $foo = 'bar') => $foo));
         $this->assertNUll($this->container->call(fn(?string $foo) => $foo));
