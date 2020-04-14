@@ -7,5 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2020-04-14
+- Changed Container::call() to accept user provided services as parameters
+
 ## [0.1.0] - 2020-03-05
 - First release
