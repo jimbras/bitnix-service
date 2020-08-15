@@ -52,6 +52,11 @@ class TemplateTest extends TestCase {
         $this->template->render('Container', __DIR__ . '/_error.tpl');
     }
 
+    public function testRenderTemplateWithData() {
+        $out = $this->template->render('Container', __DIR__ . '/_data.tpl', ['data' => 'something']);
+        $this->assertEquals('Got something!!!', \trim($out));
+    }
+
     public function testToString() {
         $this->assertIsString((string) $this->template);
     }

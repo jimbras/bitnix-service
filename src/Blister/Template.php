@@ -62,6 +62,11 @@ final class Template implements Compiler {
     private array $tags = [];
 
     /**
+     * @var array
+     */
+    private array $data = [];
+
+    /**
      * @param Provider $provider
      */
     public function provider(Provider $provider) : void {
@@ -155,12 +160,22 @@ final class Template implements Compiler {
     }
 
     /**
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    private function get(string $key, $default = null) {
+        return $this->data[$key] ?? $default;
+    }
+
+    /**
      * @param string $fqcn
      * @param string $template
+     * @param array $data
      * @return string
      * @throws ConfigurationError
      */
-    public function render(string $fqcn, string $template = self::DEFAULT) : string {
+    public function render(string $fqcn, string $template = self::DEFAULT, array $data = []) : string {
 
         if (!\preg_match(self::VALID_CLASS, $fqcn)) {
             throw new ConfigurationError(\sprintf(
@@ -176,6 +191,7 @@ final class Template implements Compiler {
 
         try {
 
+            $this->data = $data;
             $level = \ob_get_level();
 
             \set_error_handler(function($error, $message, $file, $line) {
@@ -225,6 +241,7 @@ final class Template implements Compiler {
                 = $this->prototypes
                 = $this->aliases
                 = $this->tags
+                = $this->data
                 = [];
         }
     }
