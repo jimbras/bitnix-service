@@ -123,11 +123,12 @@ final class Bubble implements Collector {
     /**
      * @param string $class
      * @param string $template
+     * @param array $data
      * @return string
      * @throws ConfigurationError
      */
-    public function burst(string $class, string $template = Template::DEFAULT) : string {
-        return $this->compile(new Template())->render($class, $template);
+    public function burst(string $class, string $template = Template::DEFAULT, array $data = []) : string {
+        return $this->compile(new Template())->render($class, $template, $data);
     }
 
     /**
